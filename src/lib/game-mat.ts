@@ -16,6 +16,8 @@ export class GameMat {
     this._render()
     this._renderPlayerMats()
     this._bindEvents()
+
+    this._listenForPlayedCards()
   }
 
   private _bindEvents(): void {
@@ -31,6 +33,7 @@ export class GameMat {
   private _initGame(): void {
     this._resetDeck()
     this._initPlayersHand()
+    this._activePlayerDraws()
   }
 
   private _initPlayersHand(): void {
@@ -44,6 +47,13 @@ export class GameMat {
 
   private _resetDeck(): void {
     this.deck = new Deck()
+  }
+
+  private _listenForPlayedCards(): void {
+    document.addEventListener("playedCard", (event: Event) => {
+      const cardId = (event as CustomEvent).detail.split("-")[0]
+      console.log("Card played: ", cardId)
+    })
   }
 
   private _activePlayerDraws(): void {
@@ -64,6 +74,7 @@ export class GameMat {
         `#player-${player.id}`
       )!
       playerMatElement.innerHTML = this.players[player.id].handTemplate
+      player.hand.forEach((card) => card.bindEvents())
     })
   }
 
@@ -84,7 +95,7 @@ export class GameMat {
             Draw
             </button>
 
-            <div id="player-0">
+            <div class="flex items-center gap-4 border p-10 rounded" id="player-0">
             </div>
       </div>
     `

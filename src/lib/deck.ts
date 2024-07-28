@@ -29,7 +29,15 @@ export class Deck {
       ({ title, description, value, amount, color, descColor }) => {
         for (let i = 0; i < amount; i++) {
           this.cards.push(
-            new Card(title, description, value, amount, color, descColor)
+            new Card(
+              `${value}-${i}`,
+              title,
+              description,
+              value,
+              amount,
+              color,
+              descColor
+            )
           )
         }
       }
