@@ -3,7 +3,7 @@ import { Player } from "./lib/player"
 
 export class App {
   static init() {
-    const playerAmount = 1
+    const playerAmount = 2
     const players = Array.from(
       { length: playerAmount },
       (_, index) => new Player(index)

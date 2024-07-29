@@ -13,7 +13,7 @@ export class Player {
   get handTemplate(): string {
     let hand = ""
     this.hand.forEach((card) => {
-      hand += card.template
+      hand += card.getTemplate(this.id === 0)
     })
     return hand
   }

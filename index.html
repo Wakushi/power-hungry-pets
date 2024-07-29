@@ -8,6 +8,44 @@
   <body>
     <div id="app">
       <div id="gameMat"></div>
+      <div
+        id="playerSelectionModal"
+        style="display: none"
+        class="absolute top-0 left-0 h-full w-full bg-black-modal z-[3]"
+      >
+        <div
+          class="absolute top-5 left-5 text-white font-bold text-xl uppercase"
+        >
+          Select a player
+        </div>
+        <button
+          id="cancelPlayerSelectionModeBtn"
+          class="absolute top-5 right-5 text-white font-bold text-xl uppercase cursor-pointer"
+        >
+          Cancel
+        </button>
+      </div>
+      <div
+        id="cardSelectionModal"
+        style="display: none"
+        class="absolute top-0 left-0 h-full w-full bg-black-modal z-[4] items-center justify-center"
+      >
+        <div
+          class="absolute top-5 left-5 text-white font-bold text-xl uppercase"
+        >
+          Select a card
+        </div>
+        <button
+          id="cancelCardSelectionModeBtn"
+          class="absolute top-5 right-5 text-white font-bold text-xl uppercase cursor-pointer"
+        >
+          Cancel
+        </button>
+        <div
+          id="cardContainer"
+          class="flex flex-wrap justify-center gap-4"
+        ></div>
+      </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

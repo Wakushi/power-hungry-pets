@@ -2,7 +2,11 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "black-modal": "#111111cf",
+      },
+    },
   },
   plugins: [],
 }
