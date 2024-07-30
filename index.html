@@ -1,52 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Power Hungry Pets</title>
-  </head>
-  <body>
-    <div id="app">
-      <div id="gameMat"></div>
-      <div
-        id="playerSelectionModal"
-        style="display: none"
-        class="absolute top-0 left-0 h-full w-full bg-black-modal z-[3]"
-      >
+</head>
+<body>
+<div id="app">
+    <div id="gameMat"></div>
+    <div
+            id="playerSelectionModal"
+            style="display: none"
+            class="absolute top-0 left-0 h-full w-full bg-black-modal z-[3]"
+    >
         <div
-          class="absolute top-5 left-5 text-white font-bold text-xl uppercase"
+                class="absolute top-5 left-5 text-white font-bold text-xl uppercase"
         >
-          Select a player
+            Select a player
         </div>
         <button
-          id="cancelPlayerSelectionModeBtn"
-          class="absolute top-5 right-5 text-white font-bold text-xl uppercase cursor-pointer"
+                id="cancelPlayerSelectionModeBtn"
+                class="absolute top-5 right-5 text-white font-bold text-xl uppercase cursor-pointer"
         >
-          Cancel
+            Cancel
         </button>
-      </div>
-      <div
-        id="cardSelectionModal"
-        style="display: none"
-        class="absolute top-0 left-0 h-full w-full bg-black-modal z-[4] items-center justify-center"
-      >
-        <div
-          class="absolute top-5 left-5 text-white font-bold text-xl uppercase"
-        >
-          Select a card
-        </div>
-        <button
-          id="cancelCardSelectionModeBtn"
-          class="absolute top-5 right-5 text-white font-bold text-xl uppercase cursor-pointer"
-        >
-          Cancel
-        </button>
-        <div
-          id="cardContainer"
-          class="flex flex-wrap justify-center gap-4"
-        ></div>
-      </div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+    <div
+            id="cardSelectionModal"
+            style="display: none"
+            class="absolute top-0 left-0 h-full w-full bg-black-modal z-[4] items-center justify-center"
+    >
+        <div
+                class="absolute top-5 left-5 text-white font-bold text-xl uppercase"
+        >
+            Select a card
+        </div>
+        <button
+                id="cancelCardSelectionModeBtn"
+                class="absolute top-5 right-5 text-white font-bold text-xl uppercase cursor-pointer"
+        >
+            Cancel
+        </button>
+        <div
+                id="cardContainer"
+                class="flex flex-wrap justify-center gap-4"
+        ></div>
+    </div>
+    <div
+            id="cardViewModal"
+            style="display: none"
+            class="absolute flex-col gap-8 top-0 left-0 h-full w-full bg-black-modal z-[4] items-center justify-center"
+    >
+        <div
+                id="cardViewContainer"
+                class="flex flex-wrap justify-center gap-4"
+        ></div>
+        <div class="flex flex-col items-center bg-white px-8 py-4 gap-4 rounded-2xl">
+            <label for="newCardIndex">Choose where to put this card ? (0 being the top of the pile)</label>
+            <input class="shadow-lg p-4 border-b-4 border-b-sky-800 rounded max-w-[100px]" id="newCardIndex"
+                   type="number" min="0"/>
+            <button class="bg-sky-800 text-white font-semibold rounded-lg py-2 px-4 margin-auto hover:text-sky-800 hover:bg-white"
+                    id="cardIndexBtn">
+                Validate
+            </button>
+        </div>
+    </div>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
 </html>
