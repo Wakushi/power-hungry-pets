@@ -8,20 +8,23 @@ export class GameMat {
     constructor(gameService: GameService) {
         this.gameService = gameService
         this.gameMatElement = document.querySelector<HTMLDivElement>("#gameMat")!
+        document.addEventListener('renderGameMat', () => this._renderGameMat())
         this._renderGameMat()
     }
 
     private _bindEvents(): void {
         const debugBtn = document.querySelector<HTMLButtonElement>("#debugButton")!
         debugBtn.addEventListener("click", () => this.debugGame())
-        document.addEventListener('renderGameMat', () => this._renderGameMat())
     }
 
 
     private _renderGameMat() {
         this.gameMatElement.innerHTML = `
         <div class="relative w-full h-[100vh] p-4 flex flex-col items-center justify-between">
-            <div class="flex items-center gap-4 border p-10 rounded z-[4] bg-white cursor-pointer" id="player-1">
+            <div class="uppercase text-2xl font-bold absolute top-10 left-10">Player ${this.gameService.activePlayerId}'s turn</div>
+            <div class="flex items-center">
+                <div class="flex items-center gap-4 border p-10 rounded z-[4] bg-white cursor-pointer" id="player-1"></div>
+                <div class="flex items-center relative h-[150px] w-[300px] self-baseline" id="player-1-discard"></div>
             </div>
             <button
                 class="rounded bg-green-600 text-white px-4 py-2 font-semibold hover:bg-white hover:text-green-600"
@@ -29,11 +32,12 @@ export class GameMat {
             >
             Debug
             </button>
-            <div class="flex items-center gap-4 border p-10 rounded" id="player-0">
+            <div class="flex items-center">
+                <div class="flex items-center gap-4 border p-10 rounded bg-white" id="player-0"></div>
+                <div class="flex items-center relative h-[150px] w-[300px] self-baseline" id="player-0-discard"></div>
             </div>
       </div>
     `
-
         this._renderPlayerMats()
         this._bindEvents()
     }
@@ -44,7 +48,7 @@ export class GameMat {
                 `#player-${player.id}`
             )!
 
-            playerMatElement.innerHTML = this.gameService.players[player.id].handTemplate
+            playerMatElement.insertAdjacentHTML('beforeend', this.gameService.players[player.id].handTemplate)
 
             if (player.id === MAIN_PLAYER_ID) {
                 player.hand.forEach((card) => card.bindEvents())
@@ -55,6 +59,12 @@ export class GameMat {
                     )
                 })
             }
+
+            const playerDiscardElement = document.querySelector<HTMLDivElement>(
+                `#player-${player.id}-discard`
+            )!
+
+            playerDiscardElement.insertAdjacentHTML('beforeend', this.gameService.players[player.id].discardTemplate)
         })
     }
 
@@ -71,6 +81,7 @@ export class GameMat {
         const randomCard = playerHand[Math.floor(Math.random() * playerHand.length)]
         console.log('AI PLAYS ', randomCard)
         randomCard.play()
+        GameService.getInstance().onNextTurn()
     }
 }
 

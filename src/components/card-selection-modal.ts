@@ -6,14 +6,8 @@ export class CardSelectionModal extends Modal {
 
     constructor() {
         super("#cardSelectionModal")
-        this._bindEvents()
         this._listenForEvents()
 
-    }
-
-    private _bindEvents(): void {
-        const closeBtn = this.modalElement.querySelector<HTMLButtonElement>("#cancelCardSelectionModeBtn")!
-        closeBtn.addEventListener('click', () => this.close())
     }
 
     private _listenForEvents(): void {
@@ -46,7 +40,7 @@ export class CardSelectionModal extends Modal {
                         color,
                         descColor
                     )
-                    cardContainer.insertAdjacentHTML('beforeend', card.getTemplate(true))
+                    cardContainer.insertAdjacentHTML('beforeend', card.getTemplate({interactive: true}))
                     card.bindEvents()
                 }
             )

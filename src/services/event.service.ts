@@ -1,6 +1,7 @@
 import {CardType} from "../lib/types/card.type.ts";
 import {GameService} from "./game.service.ts";
 import {toggleCardSelectionModal, togglePlayerSelectionModal} from "../lib/game.utils.ts";
+import {MAIN_PLAYER_ID} from "../constants.ts";
 
 export class EventService {
 
@@ -28,49 +29,53 @@ export class EventService {
         document.addEventListener("playedCard", (event: Event) => {
             const cardValue: string = (event as CustomEvent).detail.split("-")[0]
 
-            if (this._checkLastCardIdInteraction(cardValue)) {
-                return
-            }
-
             const activePlayer = this._gameService.players.find((player) => player.id === this._gameService.activePlayerId)
+
             if (activePlayer) {
                 activePlayer.discard(+cardValue)
             }
 
-            switch (cardValue) {
-                case CardType.KING_CAT:
-                    break
-                case CardType.NOT_A_PET:
-                    break
-                case CardType.HERMIT_HOME_SWAP:
-                    break
-                case CardType.JITTERY_JUGGLER:
-                    break
-                case CardType.DOGGY_GRAVE_DIGGER:
-                    break
-                case CardType.SNAKE_SORCERER:
-                    break
-                case CardType.SHELL_SHIELD:
-                    break
-                case CardType.BATTLE_BUNNY:
-                    break
-                case CardType.MOUSE_TRAPPER:
-                    const card = this._gameService.deck.draw()
-                    document.dispatchEvent(new CustomEvent("toggleCardViewModal", {
-                        detail: {
-                            show: true,
-                            card,
-                            deck: this._gameService.deck
-                        }
-                    }))
-                    break
-                case CardType.CRYSTAL_BOWL:
-                    togglePlayerSelectionModal(true)
-                    break
-                case CardType.ROYAL_ROBOVAC:
-                    break
-                default:
-                    break
+            if (this._gameService.activePlayerId === MAIN_PLAYER_ID) {
+                if (this._checkLastCardIdInteraction(cardValue)) {
+                    return
+                }
+
+                switch (cardValue) {
+                    case CardType.KING_CAT:
+                        break
+                    case CardType.NOT_A_PET:
+                        break
+                    case CardType.HERMIT_HOME_SWAP:
+                        break
+                    case CardType.JITTERY_JUGGLER:
+                        break
+                    case CardType.DOGGY_GRAVE_DIGGER:
+                        break
+                    case CardType.SNAKE_SORCERER:
+                        break
+                    case CardType.SHELL_SHIELD:
+                        break
+                    case CardType.BATTLE_BUNNY:
+                        break
+                    case CardType.MOUSE_TRAPPER:
+                        const card = this._gameService.deck.draw()
+                        document.dispatchEvent(new CustomEvent("toggleCardViewModal", {
+                            detail: {
+                                show: true,
+                                card,
+                                deck: this._gameService.deck
+                            }
+                        }))
+                        break
+                    case CardType.CRYSTAL_BOWL:
+                        togglePlayerSelectionModal(true)
+                        break
+                    case CardType.ROYAL_ROBOVAC:
+                        this._gameService.onNextTurn()
+                        break
+                    default:
+                        break
+                }
             }
 
             this._gameService.lastCardPlayedId = cardValue
@@ -119,6 +124,7 @@ export class EventService {
     }
 
     private _checkLastCardIdInteraction(clickedCardId: string): boolean {
+
         let playedInteraction = false
 
         switch (this._gameService.lastCardPlayedId) {

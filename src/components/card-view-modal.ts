@@ -40,7 +40,7 @@ export class CardViewModal extends Modal {
 
     private _renderCard(card: Card): void {
         this.cardViewContainerElement.innerHTML = ""
-        this.cardViewContainerElement.insertAdjacentHTML('beforeend', card.getTemplate())
+        this.cardViewContainerElement.insertAdjacentHTML('beforeend', card.getTemplate({interactive: true}))
         this.cardRendered = card
     }
 

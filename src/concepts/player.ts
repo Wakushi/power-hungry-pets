@@ -1,5 +1,6 @@
 import {Card} from "./card.ts"
 import {sendRenderGameMatEvent} from "../lib/game.utils.ts";
+import {MAIN_PLAYER_ID} from "../constants.ts";
 
 export class Player {
     id: number
@@ -29,7 +30,15 @@ export class Player {
     get handTemplate(): string {
         let hand = ""
         this.hand.forEach((card) => {
-            hand += card.getTemplate(this.id === 0)
+            hand += card.getTemplate({interactive: this.id === MAIN_PLAYER_ID})
+        })
+        return hand
+    }
+
+    get discardTemplate(): string {
+        let hand = ""
+        this.discards.forEach((card, index) => {
+            hand += card.getTemplate({interactive: false, size: 'small', discardIndex: index})
         })
         return hand
     }
