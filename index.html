@@ -46,15 +46,44 @@
                 id="cardViewContainer"
                 class="flex flex-wrap justify-center gap-4"
         ></div>
-        <div class="flex flex-col items-center bg-white px-8 py-4 gap-4 rounded-2xl">
-            <label for="newCardIndex">Choose where to put this card ? (0 being the top of the pile)</label>
-            <input class="shadow-lg p-4 border-b-4 border-b-sky-800 rounded max-w-[100px]" id="newCardIndex"
-                   type="number" min="0"/>
-            <button class="bg-sky-800 text-white font-semibold rounded-lg py-2 px-4 margin-auto hover:text-sky-800 hover:bg-white"
-                    id="cardIndexBtn">
-                Validate
+        <div>
+            <div id="cardViewMouseTrapCard" class="flex flex-col items-center bg-white px-8 py-4 gap-4 rounded-2xl">
+                <label for="newCardIndex">Choose where to put this card ? (0 being the top of the pile)</label>
+                <input class="shadow-lg p-4 border-b-4 border-b-sky-800 rounded max-w-[100px]" id="newCardIndex"
+                       type="number" min="0"/>
+                <button class="bg-sky-800 text-white font-semibold rounded-lg py-2 px-4 margin-auto hover:text-sky-800 hover:bg-white"
+                        id="cardIndexBtn">
+                    Validate
+                </button>
+            </div>
+            <div id="cardViewDiggerCard" class="flex flex-col items-center bg-white px-8 py-4 gap-4 rounded-2xl">
+                <p>Switch your card or leave it ?</p>
+                <div>
+                    <button id="switchCardBtn"
+                            class="bg-sky-800 text-white font-semibold rounded-lg py-2 px-4 margin-auto hover:text-sky-800 hover:bg-white">
+                        Switch
+                    </button>
+                    <button id="leaveCardBtn"
+                            class="bg-sky-800 text-white font-semibold rounded-lg py-2 px-4 margin-auto hover:text-sky-800 hover:bg-white">
+                        Leave
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--   GAME OVER SCREEN  -->
+    <div id="gameOverModal"
+         style="display: none"
+         class="absolute flex top-0 left-0 h-full w-full bg-black-modal z-[4] items-center justify-center">
+        <div class="flex flex-col gap-8 items-center justify-center bg-white rounded-2xl shadow-2xl w-[40%] h-[300px]">
+            <h1 class="text-3xl">GAME OVER</h1>
+            <p id="gameOverMessage" class="text-xl"></p>
+            <button id="playAgainBtn"
+                    class="bg-sky-800 text-white font-semibold rounded-lg py-2 px-4 margin-auto hover:text-sky-800 hover:bg-white">
+                Play again
             </button>
         </div>
+
     </div>
 </div>
 <script type="module" src="/src/main.ts"></script>

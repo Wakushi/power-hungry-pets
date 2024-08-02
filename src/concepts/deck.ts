@@ -20,7 +20,7 @@ export class Deck {
 
     private _init(): void {
         this._createDeck()
-        this._shuffleDeck()
+        this.shuffleDeck()
         this._extractRandomSideCard()
     }
 
@@ -44,7 +44,7 @@ export class Deck {
         )
     }
 
-    private _shuffleDeck(): void {
+    public shuffleDeck(): void {
         this.cards = shuffleArray(this.cards)
     }
 

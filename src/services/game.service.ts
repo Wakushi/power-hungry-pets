@@ -1,6 +1,7 @@
 import {Deck} from "../concepts/deck.ts";
 import {Player} from "../concepts/player.ts";
 import {sendRenderGameMatEvent} from "../lib/game.utils.ts";
+import {MAIN_PLAYER_ID} from "../constants.ts";
 
 export class GameService {
     private static _instance: GameService;
@@ -8,9 +9,12 @@ export class GameService {
     deck!: Deck
     players: Player[] = []
     activePlayerId: number = 0
+    private _interactionMode: 'selection' | 'activation' = 'activation'
     lastCardPlayedId!: string
     lastSelectedPlayer!: Player
     lastTurn = false
+    lastWinner!: Player
+
 
     private constructor() {
     }
@@ -31,7 +35,11 @@ export class GameService {
     }
 
     public onNextTurn(): void {
+        if (this.lastTurn) {
+            this._compareCards()
+        }
         this.activePlayerId = (this.activePlayerId + this.players.length + 1) % this.players.length
+        this.interactionMode = 'activation'
         this._onTurnStart()
     }
 
@@ -42,8 +50,25 @@ export class GameService {
         }
     }
 
+    public get activePlayer(): Player | undefined {
+        return this.players.find((player) => player.id === this.activePlayerId)
+    }
+
+    public set interactionMode(mode: 'selection' | 'activation') {
+        this._interactionMode = mode
+    }
+
+    public get interactionMode(): 'selection' | 'activation' {
+        return this._interactionMode
+    }
+
     private _onTurnStart(): void {
         this._activePlayerDraws()
+        if (this.activePlayerId !== MAIN_PLAYER_ID) {
+            setTimeout(() => {
+                this._simulateAIPlay()
+            }, 1000)
+        }
     }
 
     private _resetPlayers(playerAmount: number): void {
@@ -66,13 +91,30 @@ export class GameService {
         sendRenderGameMatEvent()
         if (!this.deck.cards.length) {
             this.lastTurn = true
-            // TODO Build the last turn mechanic
         }
     }
 
-    private _onGameOver(winner: Player): void {
-        console.log('Winner is Player ', winner.id)
+    private _compareCards(): void {
+        let winner: Player = this.players[0]
+
+        this.players.filter((p) => !p.eliminated).forEach((player) => {
+            if (player.hand[0].value > winner.hand[0].value) {
+                winner = player
+            }
+        })
+
+        this._onGameOver(winner)
     }
 
+    private _onGameOver(winner: Player): void {
+        this.lastWinner = winner
+        document.dispatchEvent(new CustomEvent("toggleGameOverModal", {detail: true}))
+    }
+
+    private _simulateAIPlay(): void {
+        const playerHand = this.players[this.activePlayerId].hand
+        const randomCard = playerHand[Math.floor(Math.random() * playerHand.length)]
+        randomCard.play()
+    }
 
 }

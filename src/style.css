@@ -3,5 +3,10 @@
 @tailwind utilities;
 
 body {
-  user-select: none;
+    user-select: none;
+}
+
+.card-bg {
+    background: url('../public/images/cardback.png') center center;
+    background-size: cover;
 }

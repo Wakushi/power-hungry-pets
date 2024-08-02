@@ -7,7 +7,8 @@ export class Player {
     hand: Card[] = []
     discards: Card[] = []
     wins: number = 0
-    eliminated: boolean = false
+    eliminated = false
+    protected = false
 
     constructor(id: number) {
         this.id = id
@@ -30,7 +31,7 @@ export class Player {
     get handTemplate(): string {
         let hand = ""
         this.hand.forEach((card) => {
-            hand += card.getTemplate({interactive: this.id === MAIN_PLAYER_ID})
+            hand += card.getTemplate({interactive: this.id === MAIN_PLAYER_ID, opponent: this.id !== MAIN_PLAYER_ID})
         })
         return hand
     }
