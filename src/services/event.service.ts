@@ -30,8 +30,6 @@ export class EventService {
         document.addEventListener("playedCard", (event: Event) => {
             const cardValue: string = (event as CustomEvent).detail.split("-")[0]
 
-            console.log('Player id ' + this._gameService.activePlayerId + ` ${this._gameService.interactionMode === 'activation' ? 'plays' : 'selects'} ` + cardValue)
-
             const activePlayer = this._gameService.players.find((player) => player.id === this._gameService.activePlayerId)
             if (!activePlayer) return
 
@@ -39,7 +37,6 @@ export class EventService {
             if (activePlayer.protected) {
                 activePlayer.protected = false
             }
-
 
             if (this._gameService.interactionMode === 'activation') {
                 activePlayer.discard(+cardValue)
@@ -51,6 +48,71 @@ export class EventService {
                 this._checkLastCardIdInteraction(cardValue)
             }
 
+        })
+    }
+
+    private _listenForPlayerMatInteraction(): void {
+        document.addEventListener("selectedPlayerMat", (event: Event) => {
+
+            const activePlayer = this._gameService.activePlayer
+            this._gameService.lastSelectedPlayer = (event as CustomEvent).detail
+
+            if (!activePlayer) return;
+
+            if (this._gameService.lastSelectedPlayer.protected) {
+                alert('Player ' + this._gameService.lastSelectedPlayer.id + ' is protected !')
+                return
+            }
+
+            const selectedPlayer = this._gameService.lastSelectedPlayer
+            const selectedPlayerCard = this._gameService.lastSelectedPlayer.hand[0]
+
+            switch (this._gameService.lastCardPlayedId) {
+                case CardType.HERMIT_HOME_SWAP:
+                    const [currentPlayerCard] = activePlayer.hand.splice(0, 1)
+                    const [targetPlayerCard] = selectedPlayer.hand.splice(0, 1)
+                    activePlayer.hand.push(targetPlayerCard)
+                    selectedPlayer.hand.push(currentPlayerCard)
+
+                    this._gameService.onNextTurn()
+                    break
+                case CardType.SNAKE_SORCERER:
+                    selectedPlayer.discard(selectedPlayerCard.value)
+
+                    if (selectedPlayerCard.value.toString() === CardType.KING_CAT) {
+                        selectedPlayer.eliminate()
+                    } else {
+                        selectedPlayer.hand.push(this._gameService.deck.draw())
+                    }
+
+                    this._gameService.onNextTurn()
+                    break
+                case CardType.BATTLE_BUNNY:
+                    const activePlayerCard = activePlayer.hand[0]
+
+                    if (activePlayerCard.value > selectedPlayerCard.value) {
+                        selectedPlayer.eliminate()
+                    } else if (activePlayerCard.value < selectedPlayerCard.value) {
+                        activePlayer.eliminate()
+                    }
+
+                    this._gameService.onNextTurn()
+                    break
+                case CardType.CRYSTAL_BOWL:
+                    toggleCardSelectionModal(true)
+                    this._gameService.interactionMode = 'selection'
+                    break
+                default:
+                    break
+            }
+
+            togglePlayerSelectionModal(false)
+        })
+    }
+
+    private _listenForPlayerElimination(): void {
+        document.addEventListener('playerEliminated', () => {
+            this._gameService.onPlayerElimination()
         })
     }
 
@@ -131,71 +193,6 @@ export class EventService {
             default:
                 break
         }
-    }
-
-    private _listenForPlayerMatInteraction(): void {
-        document.addEventListener("selectedPlayerMat", (event: Event) => {
-
-            const activePlayer = this._gameService.activePlayer
-            this._gameService.lastSelectedPlayer = (event as CustomEvent).detail
-
-            if (!activePlayer) return;
-
-            if (this._gameService.lastSelectedPlayer.protected) {
-                alert('Player ' + this._gameService.lastSelectedPlayer.id + ' is protected !')
-                return
-            }
-
-            const selectedPlayer = this._gameService.lastSelectedPlayer
-            const selectedPlayerCard = this._gameService.lastSelectedPlayer.hand[0]
-
-            switch (this._gameService.lastCardPlayedId) {
-                case CardType.HERMIT_HOME_SWAP:
-                    const [currentPlayerCard] = activePlayer.hand.splice(0, 1)
-                    const [targetPlayerCard] = selectedPlayer.hand.splice(0, 1)
-                    activePlayer.hand.push(targetPlayerCard)
-                    selectedPlayer.hand.push(currentPlayerCard)
-
-                    this._gameService.onNextTurn()
-                    break
-                case CardType.SNAKE_SORCERER:
-                    selectedPlayer.discard(selectedPlayerCard.value)
-
-                    if (selectedPlayerCard.value.toString() === CardType.KING_CAT) {
-                        selectedPlayer.eliminate()
-                    } else {
-                        selectedPlayer.hand.push(this._gameService.deck.draw())
-                    }
-
-                    this._gameService.onNextTurn()
-                    break
-                case CardType.BATTLE_BUNNY:
-                    const activePlayerCard = activePlayer.hand[0]
-
-                    if (activePlayerCard.value > selectedPlayerCard.value) {
-                        selectedPlayer.eliminate()
-                    } else if (activePlayerCard.value < selectedPlayerCard.value) {
-                        activePlayer.eliminate()
-                    }
-
-                    this._gameService.onNextTurn()
-                    break
-                case CardType.CRYSTAL_BOWL:
-                    toggleCardSelectionModal(true)
-                    this._gameService.interactionMode = 'selection'
-                    break
-                default:
-                    break
-            }
-
-            togglePlayerSelectionModal(false)
-        })
-    }
-
-    private _listenForPlayerElimination(): void {
-        document.addEventListener('playerEliminated', () => {
-            this._gameService.onPlayerElimination()
-        })
     }
 
     private _checkLastCardIdInteraction(clickedCardId: string): void {

@@ -10,10 +10,13 @@ export class GameService {
     players: Player[] = []
     activePlayerId: number = 0
     private _interactionMode: 'selection' | 'activation' = 'activation'
+
     lastCardPlayedId!: string
     lastSelectedPlayer!: Player
-    lastTurn = false
     lastWinner!: Player
+
+    lastTurn = false
+    private _gameOver = false
 
 
     private constructor() {
@@ -27,6 +30,7 @@ export class GameService {
     }
 
     public startGame(playerAmount: number): void {
+        this._gameOver = false
         this.activePlayerId = 0
         this._resetDeck()
         this._resetPlayers(playerAmount)
@@ -38,9 +42,11 @@ export class GameService {
         if (this.lastTurn) {
             this._compareCards()
         }
-        this.activePlayerId = (this.activePlayerId + this.players.length + 1) % this.players.length
-        this.interactionMode = 'activation'
-        this._onTurnStart()
+        if (!this._gameOver) {
+            this.activePlayerId = (this.activePlayerId + this.players.length + 1) % this.players.length
+            this.interactionMode = 'activation'
+            this._onTurnStart()
+        }
     }
 
     public onPlayerElimination(): void {
@@ -107,6 +113,7 @@ export class GameService {
     }
 
     private _onGameOver(winner: Player): void {
+        this._gameOver = true
         this.lastWinner = winner
         document.dispatchEvent(new CustomEvent("toggleGameOverModal", {detail: true}))
     }
